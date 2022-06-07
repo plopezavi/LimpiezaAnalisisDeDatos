@@ -1,0 +1,88 @@
+---
+title: "PRA2"
+output: html_document
+date: '2022-05-23'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, echo=FALSE}
+library(dplyr)
+library(randomForest)
+```
+
+```{r}
+data <- read.csv('C:/Users/Placido Lopez Avila/Documents/LimpiezaAnalisisDeDatos/data/train.csv')
+data <- data %>% select(PassengerId,Survived,Pclass,Sex,Age,Embarked)
+str(data)
+```
+```{r}
+data <- data[!is.na(data$PassengerId),]
+data <- data[!is.na(data$Survived),]
+data <- data[!is.na(data$Pclass),]
+data <- data[!is.na(data$Sex),]
+data <- data[!is.na(data$Age),]
+data <- data[!is.na(data$Embarked),]
+```
+
+```{r}
+unique(data$Sex)
+unique(data$Embarked)
+```
+
+```{r}
+data <- data[!data$Embarked == "", ]
+```
+
+```{r}
+unique(data$Embarked)
+```
+
+```{r}
+impute_outliers <- function(x){
+  quantiles <- quantile(x, c(0.05, 0.95))
+  x[x<quantiles[1]] <- mean(x)
+  x[x>quantiles[2]] <- median(x)
+  x
+  }
+```
+
+```{r}
+boxplot(data$Age)
+```
+
+```{r}
+data$Age <- impute_outliers(data$Age)
+```
+
+```{r}
+boxplot(data$Age)
+```
+
+```{r}
+Ages <- split(data$Age, data$Survived)
+Ages
+```
+
+```{r}
+par(mfrow=c(1, 2))
+
+qqnorm(Ages$`0`, pch=20, main='QQplot Survived = 0')
+qqline(Ages$`0`)
+
+qqnorm(Ages$`1`, pch=20, main='QQplot Survived = 1')
+qqline(Ages$`1`)
+```
+
+```{r}
+shapiro.test(Ages$`0`)
+```
+```{r}
+shapiro.test(Ages$`1`)
+```
+```{r}
+result = var.test(Survived~Sex, data=data)
+print(result)
+```
