@@ -10,7 +10,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r, echo=FALSE}
 library(dplyr)
-library(randomForest)
 ```
 
 ```{r}
@@ -18,6 +17,9 @@ data <- read.csv('C:/Users/Placido Lopez Avila/Documents/LimpiezaAnalisisDeDatos
 data <- data %>% select(PassengerId,Survived,Pclass,Sex,Age,Embarked)
 str(data)
 ```
+
+
+
 ```{r}
 data <- data[!is.na(data$PassengerId),]
 data <- data[!is.na(data$Survived),]
@@ -25,6 +27,10 @@ data <- data[!is.na(data$Pclass),]
 data <- data[!is.na(data$Sex),]
 data <- data[!is.na(data$Age),]
 data <- data[!is.na(data$Embarked),]
+```
+
+```{r}
+table(data$Survived)
 ```
 
 ```{r}
@@ -83,6 +89,75 @@ shapiro.test(Ages$`0`)
 shapiro.test(Ages$`1`)
 ```
 ```{r}
-result = var.test(Survived~Sex, data=data)
-print(result)
+var.test(Survived~Sex, data=data)
+```
+
+```{r}
+bartlett.test(data$Survived~data$Pclass)
+```
+
+```{r}
+bartlett.test(data$Survived~data$Sex)
+```
+
+```{r}
+bartlett.test(data$Survived~data$Embarked)
+```
+
+```{r}
+Embarkedn <- factor(data$Embarked)
+Embarkedn <- as.numeric(Embarkedn)
+```
+
+```{r}
+cor(data$Survived, Embarkedn, method='pearson')
+```
+
+```{r}
+Sexn <- factor(data$Sex)
+Sexn <- as.numeric(Sexn)
+```
+
+```{r}
+cor(data$Survived, Sexn, method='pearson')
+```
+
+```{r}
+cor(data$Survived, data$Pclass, method='pearson')
+```
+
+```{r}
+cor(data$Survived, data$Age, method='pearson')
+```
+
+```{r}
+cov(data$Survived, Embarkedn)
+```
+
+```{r}
+cov(data$Survived, Sexn)
+```
+
+```{r}
+cov(data$Survived, data$Pclass)
+```
+
+```{r}
+cov(data$Survived, data$Age)
+```
+
+```{r}
+t.test(data$Survived, Embarkedn)
+```
+
+```{r}
+t.test(data$Survived, Sexn)
+```
+
+```{r}
+t.test(data$Survived, data$Pclass)
+```
+
+```{r}
+t.test(data$Survived, data$Age)
 ```
